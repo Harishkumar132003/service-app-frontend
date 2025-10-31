@@ -2,11 +2,11 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/Login.jsx'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
-
-function Admin() { return <div style={{ padding: 16 }}>Admin Dashboard</div> }
-function User() { return <div style={{ padding: 16 }}>User Dashboard</div> }
-function ServiceProvider() { return <div style={{ padding: 16 }}>Service Provider Dashboard</div> }
-function Accountant() { return <div style={{ padding: 16 }}>Accountant Dashboard</div> }
+import AdminDashboard from './pages/admin/AdminDashboard.jsx'
+import MemberDashboard from './pages/member/MemberDashboard.jsx'
+import ManagerDashboard from './pages/manager/ManagerDashboard.jsx'
+import ProviderDashboard from './pages/provider/ProviderDashboard.jsx'
+import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx'
 
 function RoleRedirect() {
 	const { role } = useAuth()
@@ -15,6 +15,7 @@ function RoleRedirect() {
 		case 'user': return <Navigate to="/user" replace />
 		case 'serviceprovider': return <Navigate to="/serviceprovider" replace />
 		case 'accountant': return <Navigate to="/accountant" replace />
+		case 'manager': return <Navigate to="/manager" replace />
 		default: return <Navigate to="/login" replace />
 	}
 }
@@ -25,16 +26,19 @@ function AppRoutes() {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/" element={<RoleRedirect />} />
 			<Route element={<ProtectedRoute allowedRoles={["admin"]} />}> 
-				<Route path="/admin" element={<Admin />} />
+				<Route path="/admin" element={<AdminDashboard />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["user"]} />}> 
-				<Route path="/user" element={<User />} />
+				<Route path="/user" element={<MemberDashboard />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["serviceprovider"]} />}> 
-				<Route path="/serviceprovider" element={<ServiceProvider />} />
+				<Route path="/serviceprovider" element={<ProviderDashboard />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["accountant"]} />}> 
-				<Route path="/accountant" element={<Accountant />} />
+				<Route path="/accountant" element={<AccountantDashboard />} />
+			</Route>
+			<Route element={<ProtectedRoute allowedRoles={["manager"]} />}> 
+				<Route path="/manager" element={<ManagerDashboard />} />
 			</Route>
 			<Route path="*" element={<Navigate to="/login" replace />} />
 		</Routes>
