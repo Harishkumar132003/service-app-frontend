@@ -6,7 +6,7 @@ import { approveInvoice, rejectInvoice } from '../../api/invoices.js'
 
 export default function ManagerDashboard() {
 	const [tickets, setTickets] = useState([])
-	async function load(){ setTickets(await listTickets()) }
+	async function load(){ setTickets(await listTickets({ status: 'Manager Approval' })) }
 	useEffect(()=>{ load() },[])
 
 	async function onApprove(t){ if (!t.invoice_id) return; await approveInvoice(t.invoice_id); await load() }
@@ -18,7 +18,7 @@ export default function ManagerDashboard() {
 			<Container maxWidth="sm" sx={{ py: 2 }}>
 				<Stack spacing={1.5}>
 					<Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Invoices Pending Approval</Typography>
-					{tickets.filter(t=> t.status==='Manager Approval' && t.invoice_id).map(t=> (
+					{tickets.filter(t=> t.invoice_id).map(t=> (
 						<Card key={t.id}><CardContent>
 							<Typography sx={{ fontWeight: 600 }}>{t.category}</Typography>
 							<Typography variant="body2" color="text.secondary">Invoice: {t.invoice_id}</Typography>

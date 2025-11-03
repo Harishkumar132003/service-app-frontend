@@ -7,8 +7,19 @@ function authHeader() {
 	return t ? { Authorization: `Bearer ${t}` } : {}
 }
 
-export async function listTickets() {
-	const res = await axios.get(`${API_BASE}/tickets`, { headers: { ...authHeader() } })
+export async function listTickets(filters = {}) {
+	const params = new URLSearchParams()
+	if (filters.status) params.append('status', filters.status)
+	if (filters.category) params.append('category', filters.category)
+	if (filters.assigned_provider) params.append('assigned_provider', filters.assigned_provider)
+	if (filters.created_by) params.append('created_by', filters.created_by)
+	if (filters.created_after) params.append('created_after', filters.created_after)
+	if (filters.created_before) params.append('created_before', filters.created_before)
+	if (filters.sort) params.append('sort', filters.sort)
+	
+	const queryString = params.toString()
+	const url = queryString ? `${API_BASE}/tickets?${queryString}` : `${API_BASE}/tickets`
+	const res = await axios.get(url, { headers: { ...authHeader() } })
 	return res.data.tickets
 }
 
@@ -16,7 +27,9 @@ export async function createTicket({ category, description, imageFile }) {
 	const form = new FormData()
 	form.append('category', category)
 	form.append('description', description)
-	form.append('image', imageFile)
+	if (imageFile) {
+	formData.append('image', imageFile)
+}
 	const res = await axios.post(`${API_BASE}/tickets`, form, { headers: { ...authHeader() } })
 	return res.data
 }

@@ -6,7 +6,7 @@ import { processInvoice } from '../../api/invoices.js'
 
 export default function AccountantDashboard() {
 	const [tickets, setTickets] = useState([])
-	async function load(){ setTickets(await listTickets()) }
+	async function load(){ setTickets(await listTickets({ status: 'Accountant Processing' })) }
 	useEffect(()=>{ load() },[])
 
 	async function onProcess(t){ if (!t.invoice_id) return; await processInvoice(t.invoice_id); await load() }
@@ -17,7 +17,7 @@ export default function AccountantDashboard() {
 			<Container maxWidth="sm" sx={{ py: 2 }}>
 				<Stack spacing={1.5}>
 					<Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Ready for Payment</Typography>
-					{tickets.filter(t=> t.status==='Accountant Processing' && t.invoice_id).map(t=> (
+					{tickets.filter(t=> t.invoice_id).map(t=> (
 						<Card key={t.id}><CardContent>
 							<Typography sx={{ fontWeight: 600 }}>{t.category}</Typography>
 							<Typography variant="body2" color="text.secondary">Invoice: {t.invoice_id}</Typography>

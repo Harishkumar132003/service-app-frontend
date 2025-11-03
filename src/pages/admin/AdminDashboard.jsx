@@ -6,18 +6,24 @@ import { createInvoice } from '../../api/invoices.js'
 import { listUsersByRole } from '../../api/users.js'
 
 export default function AdminDashboard() {
-	const [tickets, setTickets] = useState([])
+	const [tickets, setTickets] = useState({ pending: [], assignable: [] })
 	const [amountMap, setAmountMap] = useState({})
 	const [assignMap, setAssignMap] = useState({})
 	const [providers, setProviders] = useState([])
 
 	async function load() {
-		const [t, prov] = await Promise.all([
-			listTickets(),
-			listUsersByRole('serviceprovider')
-		])
-		setTickets(t)
+		const prov = await listUsersByRole('serviceprovider')
 		setProviders(prov)
+		// Fetch tickets by status - backend filtering
+		const [pending, assignable] = await Promise.all([
+			listTickets({ status: 'Submitted' }),
+			listTickets({ status: 'Service Provider Assignment' })
+		])
+		// Also get Admin Review status
+		const adminReview = await listTickets({ status: 'Admin Review' })
+		// Combine pending review tickets
+		const allPending = [...pending, ...adminReview]
+		setTickets({ pending: allPending, assignable })
 	}
 	useEffect(()=>{ load() },[])
 
@@ -41,7 +47,7 @@ export default function AdminDashboard() {
 			<Container maxWidth="sm" sx={{ py: 2 }}>
 				<Stack spacing={1.5}>
 					<Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Pending Review</Typography>
-					{tickets.filter(t=> t.status==='Submitted' || t.status==='Admin Review').map(t=> (
+					{(tickets.pending || []).map(t=> (
 						<Card key={t.id}><CardContent>
 							<Typography sx={{ fontWeight: 600 }}>{t.category} - {t.status}</Typography>
 							<Typography variant="body2" color="text.secondary">{t.description}</Typography>
@@ -53,7 +59,7 @@ export default function AdminDashboard() {
 					))}
 
 					<Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 2 }}>Assign to Provider</Typography>
-					{tickets.filter(t=> t.status==='Service Provider Assignment' && !t.assigned_provider.length).map(t=> (
+					{(tickets.assignable || []).map(t=> (
 						<Card key={t.id}><CardContent>
 							<Typography sx={{ fontWeight: 600 }}>{t.category} - {t.status}</Typography>
 							<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
