@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppBarTop from '../../components/AppBarTop.jsx';
+import TicketDetails from '../../components/TicketDetails.jsx';
 import { listTickets, createTicket, verifyTicket } from '../../api/tickets.js';
 
 const CATEGORIES = ['bathroom', 'table', 'ac'];
@@ -23,6 +24,8 @@ export default function MemberDashboard() {
   const [imageFile, setImageFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [filter, setFilter] = useState('inprogress');
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
 const filteredTickets = tickets.filter(t => {
 	if (filter === 'completed') return t.status === 'Completed'
@@ -53,6 +56,16 @@ const filteredTickets = tickets.filter(t => {
   async function onVerify(id) {
     await verifyTicket(id);
     await load();
+  }
+
+  function openDetails(t){
+    setSelectedTicket(t);
+    setDetailsOpen(true);
+  }
+
+  function closeDetails(){
+    setDetailsOpen(false);
+    setSelectedTicket(null);
   }
 
   return (
@@ -136,7 +149,7 @@ const filteredTickets = tickets.filter(t => {
 
             <Stack spacing={1.5}>
               {filteredTickets.map((t) => (
-                <Card key={t.id}>
+                <Card key={t.id} onClick={()=>openDetails(t)} sx={{ cursor: 'pointer' }}>
                   <CardContent>
                     <Typography sx={{ fontWeight: 600 }}>
                       {t.category} - {t.status}
@@ -146,7 +159,7 @@ const filteredTickets = tickets.filter(t => {
                     </Typography>
                     <Stack direction='row' spacing={1} sx={{ mt: 1 }}>
                       {t.status === 'Work Completion' && (
-                        <Button size='small' onClick={() => onVerify(t.id)}>
+                        <Button size='small' onClick={(e) => { e.stopPropagation(); onVerify(t.id) }}>
                           Verify
                         </Button>
                       )}
@@ -155,6 +168,7 @@ const filteredTickets = tickets.filter(t => {
                 </Card>
               ))}
             </Stack>
+            <TicketDetails open={detailsOpen} onClose={closeDetails} ticket={selectedTicket} />
           </Grid>
         </Grid>
       </Container>

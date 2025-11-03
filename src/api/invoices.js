@@ -7,9 +7,23 @@ function authHeader() {
 	return t ? { Authorization: `Bearer ${t}` } : {}
 }
 
-export async function createInvoice(ticketId, amount) {
-	const res = await axios.post(`${API_BASE}/invoices`, { ticket_id: ticketId, amount }, { headers: { ...authHeader() } })
-	return res.data
+export async function createInvoice(ticketId, { amount, imageFile } = {}) {
+    // If an image is present or amount is undefined/null, use multipart
+    if (imageFile || amount === undefined || amount === null || `${amount}`.trim() === '') {
+        const form = new FormData()
+        form.append('ticket_id', ticketId)
+        if (amount !== undefined && amount !== null && `${amount}`.trim() !== '') {
+            form.append('amount', amount)
+        }
+        if (imageFile) {
+            form.append('image', imageFile)
+        }
+        const res = await axios.post(`${API_BASE}/invoices`, form, { headers: { ...authHeader() } })
+        return res.data
+    }
+    // JSON path when only amount is provided
+    const res = await axios.post(`${API_BASE}/invoices`, { ticket_id: ticketId, amount }, { headers: { ...authHeader() } })
+    return res.data
 }
 
 export async function approveInvoice(invoiceId) {
@@ -25,4 +39,12 @@ export async function rejectInvoice(invoiceId) {
 export async function processInvoice(invoiceId) {
 	const res = await axios.patch(`${API_BASE}/invoices/${invoiceId}/process`, {}, { headers: { ...authHeader() } })
 	return res.data
+}
+
+export async function fetchInvoiceImageBlob(invoiceId){
+    const res = await axios.get(`${API_BASE}/invoices/${invoiceId}/image`, {
+        headers: { ...authHeader() },
+        responseType: 'blob'
+    })
+    return res.data // Blob
 }

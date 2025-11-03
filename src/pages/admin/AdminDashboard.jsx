@@ -1,15 +1,30 @@
 import { useEffect, useState } from 'react'
-import { Box, Button, Card, CardContent, Container, MenuItem, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Chip, Container, InputAdornment, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import AppBarTop from '../../components/AppBarTop.jsx'
 import { listTickets, assignTicket } from '../../api/tickets.js'
 import { createInvoice } from '../../api/invoices.js'
 import { listUsersByRole } from '../../api/users.js'
+import TicketDetails from '../../components/TicketDetails.jsx'
 
 export default function AdminDashboard() {
 	const [tickets, setTickets] = useState({ pending: [], assignable: [] })
 	const [amountMap, setAmountMap] = useState({})
 	const [assignMap, setAssignMap] = useState({})
 	const [providers, setProviders] = useState([])
+    const [invoiceFileMap, setInvoiceFileMap] = useState({})
+	const [detailsOpen, setDetailsOpen] = useState(false);
+	const [selectedTicket, setSelectedTicket] = useState(null);
+
+
+  function openDetails(t){
+    setSelectedTicket(t);
+    setDetailsOpen(true);
+  }
+
+  function closeDetails(){
+    setDetailsOpen(false);
+    setSelectedTicket(null);
+  }
 
 	async function load() {
 		const prov = await listUsersByRole('serviceprovider')
@@ -28,9 +43,12 @@ export default function AdminDashboard() {
 	useEffect(()=>{ load() },[])
 
 	async function onCreateInvoice(t) {
-		const amount = parseFloat(amountMap[t.id] || '0')
-		if (!amount || amount <= 0) return
-		await createInvoice(t.id, amount)
+		const amountStr = (amountMap[t.id] || '').toString()
+		const hasAmount = amountStr.trim() !== '' && !isNaN(Number(amountStr))
+		const amount = hasAmount ? Number(amountStr) : undefined
+		const imageFile = invoiceFileMap[t.id]
+		if (!hasAmount && !imageFile) return
+		await createInvoice(t.id, { amount, imageFile })
 		await load()
 	}
 
@@ -48,13 +66,59 @@ export default function AdminDashboard() {
 				<Stack spacing={1.5}>
 					<Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Pending Review</Typography>
 					{(tickets.pending || []).map(t=> (
-						<Card key={t.id}><CardContent>
+						<Card key={t.id}  onClick={()=>openDetails(t)}><CardContent>
 							<Typography sx={{ fontWeight: 600 }}>{t.category} - {t.status}</Typography>
 							<Typography variant="body2" color="text.secondary">{t.description}</Typography>
-							<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-								<TextField size="small" type="number" placeholder="Amount" value={amountMap[t.id]||''} onChange={e=>setAmountMap(v=>({...v,[t.id]:e.target.value}))} sx={{ flex: 1 }} />
-								<Button onClick={()=>onCreateInvoice(t)}>Create Invoice</Button>
-							</Stack>
+							<Stack spacing={1.5} sx={{ mt: 1 }}>
+	<TextField
+		label="Amount"
+		size="small"
+		type="number"
+		fullWidth
+		value={amountMap[t.id] ?? ''}
+		onChange={e =>
+			setAmountMap(prev => ({ ...prev, [t.id]: e.target.value }))
+		}
+		InputProps={{
+			startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+		}}
+	/>
+
+	<Stack direction="row" spacing={1} alignItems="center">
+		<Button variant="outlined" component="label" size="small">
+			{invoiceFileMap[t.id] ? 'Change Image' : 'Upload Invoice Image'}
+			<input
+				type="file"
+				hidden
+				accept="image/*"
+				onChange={(e) => {
+					const f = e.target.files?.[0];
+					setInvoiceFileMap(v => ({ ...v, [t.id]: f }));
+				}}
+			/>
+		</Button>
+
+		{invoiceFileMap[t.id] && (
+			<Chip
+				label={invoiceFileMap[t.id].name}
+				size="small"
+				onDelete={() =>
+					setInvoiceFileMap(v => ({ ...v, [t.id]: undefined }))
+				}
+			/>
+		)}
+
+		<Button
+			variant="contained"
+			size="small"
+			onClick={() => onCreateInvoice(t)}
+			disabled={!((amountMap[t.id] || '').trim() || invoiceFileMap[t.id])}
+		>
+			Create
+		</Button>
+	</Stack>
+</Stack>
+
 						</CardContent></Card>
 					))}
 
@@ -68,11 +132,13 @@ export default function AdminDashboard() {
 										<MenuItem key={p.email} value={p.email}>{p.email}</MenuItem>
 									))}
 								</TextField>
-								<Button onClick={()=>onAssign(t)}>Assign</Button>
+								<Button onClick={(e)=>{ e.stopPropagation(); onAssign(t)}}>Assign</Button>
 							</Stack>
 						</CardContent></Card>
 					))}
 				</Stack>
+							<TicketDetails open={detailsOpen} onClose={closeDetails} ticket={selectedTicket} />
+				
 			</Container>
 		</Box>
 	)

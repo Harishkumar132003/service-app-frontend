@@ -28,7 +28,8 @@ export async function createTicket({ category, description, imageFile }) {
 	form.append('category', category)
 	form.append('description', description)
 	if (imageFile) {
-	formData.append('image', imageFile)
+	form.append('image', imageFile)
+	
 }
 	const res = await axios.post(`${API_BASE}/tickets`, form, { headers: { ...authHeader() } })
 	return res.data
