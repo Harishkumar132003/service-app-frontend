@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Box, Button, Card, CardContent, Container, Stack, Typography, Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Box, Button, Card, CardContent, Container, Stack, Typography, Dialog, DialogContent, DialogTitle, TextField, MenuItem } from '@mui/material'
 import AppBarTop from '../../components/AppBarTop.jsx'
 import { listTickets } from '../../api/tickets.js'
 import { approveInvoice, rejectInvoice, fetchInvoiceImageBlob } from '../../api/invoices.js'
@@ -11,7 +11,8 @@ export default function ManagerDashboard() {
     const [imageUrl, setImageUrl] = useState('')
     const [detailsOpen, setDetailsOpen] = useState(false)
     const [selectedTicket, setSelectedTicket] = useState(null)
-	async function load(){ setTickets(await listTickets({ status: 'Manager Approval' })) }
+    const [invFilter, setInvFilter] = useState('pending') // pending|approved|rejected
+	async function load(){ setTickets(await listTickets()) }
 	useEffect(()=>{ load() },[])
 
 	async function onApprove(t){ if (!t.invoice_id) return; await approveInvoice(t.invoice_id); await load() }
@@ -47,20 +48,41 @@ export default function ManagerDashboard() {
         setSelectedTicket(null)
     }
 
+    const filtered = tickets.filter(t => {
+        const st = (t.invoice_status || '').toLowerCase()
+        if (invFilter === 'approved') return st === 'approved'
+        if (invFilter === 'rejected') return st === 'rejected'
+        return st === 'pending manager approval' || st === 'pending' || !st
+    })
+
 	return (
 		<Box>
 			<AppBarTop title="Manager Dashboard" />
 			<Container maxWidth="sm" sx={{ py: 2 }}>
 				<Stack spacing={1.5}>
 					<Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Invoices Pending Approval</Typography>
-					{tickets.filter(t=> t.invoice_id).map(t=> (
+					<Stack direction="row" spacing={1} alignItems="center">
+						<TextField size="small" select label="Filter" value={invFilter} onChange={(e)=>setInvFilter(e.target.value)} sx={{ width: 220 }}>
+							<MenuItem value="pending">Wait for Approval</MenuItem>
+							<MenuItem value="approved">Approved</MenuItem>
+							<MenuItem value="rejected">Rejected</MenuItem>
+						</TextField>
+					</Stack>
+					{filtered.filter(t=> t.invoice_id).map(t=> (
 						<Card key={t.id} onClick={()=>openDetails(t)} sx={{ cursor: 'pointer' }}><CardContent>
 							<Typography sx={{ fontWeight: 600 }}>{t.category}</Typography>
 							<Typography variant="body2" color="text.secondary">Invoice: {t.invoice_id}</Typography>
 							<Typography variant="body1" sx={{ mt: .5, fontWeight: 600 }}>Amount: {typeof t.invoice_amount === 'number' ? t.invoice_amount.toFixed(2) : t.invoice_amount}</Typography>
+							{t.invoice_updated_by && (
+								<Typography variant="caption" color="text.secondary">Updated by: {t.invoice_updated_by}</Typography>
+							)}
 							<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                                {t.status == 'Pending Manager Approval' && (
 								<Button onClick={(e)=>{ e.stopPropagation(); onApprove(t) }}>Approve</Button>
+                                )}
+                                {t.status == 'Pending Manager Approval' && (
 								<Button variant="outlined" onClick={(e)=>{ e.stopPropagation(); onReject(t) }}>Reject</Button>
+                                )}
                                 {t.invoice_has_image && (
                                     <Button variant="text" onClick={(e)=>{ e.stopPropagation(); onViewInvoiceImage(t) }}>View Invoice Image</Button>
                                 )}
