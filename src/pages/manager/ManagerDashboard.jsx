@@ -4,8 +4,10 @@ import AppBarTop from '../../components/AppBarTop.jsx'
 import { listTickets } from '../../api/tickets.js'
 import { approveInvoice, rejectInvoice, fetchInvoiceImageBlob } from '../../api/invoices.js'
 import TicketDetails from '../../components/TicketDetails.jsx'
+import { useNavigate } from 'react-router-dom'
 
 export default function ManagerDashboard() {
+    const navigate = useNavigate()
 	const [tickets, setTickets] = useState([])
     const [imageOpen, setImageOpen] = useState(false)
     const [imageUrl, setImageUrl] = useState('')
@@ -59,6 +61,18 @@ export default function ManagerDashboard() {
 		<Box>
 			<AppBarTop title="Manager Dashboard" />
 			<Container maxWidth="sm" sx={{ py: 2 }}>
+                <Stack direction='row' justifyContent='flex-end'>
+                            <Button
+                              variant='text'
+                              size='small'
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/manager/history');
+                              }}
+                            >
+                              View Full Details
+                            </Button>
+                            </Stack>
 				<Stack spacing={1.5}>
 					<Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Invoices Pending Approval</Typography>
 					<Stack direction="row" spacing={1} alignItems="center">
@@ -77,10 +91,10 @@ export default function ManagerDashboard() {
 								<Typography variant="caption" color="text.secondary">Updated by: {t.invoice_updated_by}</Typography>
 							)}
 							<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                                {t.status == 'Pending Manager Approval' && (
+                                {t.invoice_status == 'Pending Manager Approval' && (
 								<Button onClick={(e)=>{ e.stopPropagation(); onApprove(t) }}>Approve</Button>
                                 )}
-                                {t.status == 'Pending Manager Approval' && (
+                                {t.invoice_status == 'Pending Manager Approval' && (
 								<Button variant="outlined" onClick={(e)=>{ e.stopPropagation(); onReject(t) }}>Reject</Button>
                                 )}
                                 {t.invoice_has_image && (

@@ -7,6 +7,7 @@ import MemberDashboard from './pages/member/MemberDashboard.jsx'
 import ManagerDashboard from './pages/manager/ManagerDashboard.jsx'
 import ProviderDashboard from './pages/provider/ProviderDashboard.jsx'
 import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx'
+import ViewAdminHistory from './pages/admin/viewAdminHistory.jsx'
 
 function RoleRedirect() {
 	const { role } = useAuth()
@@ -27,6 +28,7 @@ function AppRoutes() {
 			<Route path="/" element={<RoleRedirect />} />
 			<Route element={<ProtectedRoute allowedRoles={["admin"]} />}> 
 				<Route path="/admin" element={<AdminDashboard />} />
+				<Route path="/admin/history" element={<ViewAdminHistory />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["user"]} />}> 
 				<Route path="/user" element={<MemberDashboard />} />
@@ -39,6 +41,8 @@ function AppRoutes() {
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["manager"]} />}> 
 				<Route path="/manager" element={<ManagerDashboard />} />
+				<Route path="/manager/history" element={<ViewAdminHistory />} />
+
 			</Route>
 			<Route path="*" element={<Navigate to="/login" replace />} />
 		</Routes>

@@ -9,7 +9,13 @@ function authHeader() {
 
 export async function listTickets(filters = {}) {
 	const params = new URLSearchParams()
-	if (filters.status) params.append('status', filters.status)
+	if (filters.status) {
+		if (Array.isArray(filters.status)) {
+			params.append('status', filters.status.join(','))
+		} else {
+			params.append('status', filters.status)
+		}
+	}
 	if (filters.category) params.append('category', filters.category)
 	if (filters.assigned_provider) params.append('assigned_provider', filters.assigned_provider)
 	if (filters.created_by) params.append('created_by', filters.created_by)
