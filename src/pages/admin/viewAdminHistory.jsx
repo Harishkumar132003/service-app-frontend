@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { listTickets } from '../../api/tickets.js'
 import TicketDetails from '../../components/TicketDetails.jsx'
-import { useAuth } from '../../context/AuthContext.jsx';
 
 const ViewAdminHistory = () => {
   const role = window.location.pathname.includes('/manager/history') ? 'manager' : 'admin';

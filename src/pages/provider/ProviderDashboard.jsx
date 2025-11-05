@@ -6,7 +6,7 @@ import { listTickets, completeTicket } from '../../api/tickets.js'
 export default function ProviderDashboard() {
 	const [tickets, setTickets] = useState([])
 	const [filesMap, setFilesMap] = useState({})
-	async function load(){ setTickets(await listTickets()) }
+	async function load(){ setTickets(await listTickets({ status: 'Service Provider Assignment' })) }
 	useEffect(()=>{ load() },[])
 
 	async function onComplete(t){

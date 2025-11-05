@@ -41,6 +41,17 @@ export async function processInvoice(invoiceId) {
 	return res.data
 }
 
+export async function markPaid(invoiceId, paymentImageFile){
+    if (paymentImageFile){
+        const form = new FormData()
+        form.append('payment_image', paymentImageFile)
+        const res = await axios.patch(`${API_BASE}/invoices/${invoiceId}/process`, form, { headers: { ...authHeader() } })
+        return res.data
+    }
+    const res = await axios.patch(`${API_BASE}/invoices/${invoiceId}/process`, {}, { headers: { ...authHeader() } })
+    return res.data
+}
+
 export async function fetchInvoiceImageBlob(invoiceId){
     const res = await axios.get(`${API_BASE}/invoices/${invoiceId}/image`, {
         headers: { ...authHeader() },

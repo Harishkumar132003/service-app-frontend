@@ -10,6 +10,10 @@ import {
   Stack,
   TextField,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import AppBarTop from '../../components/AppBarTop.jsx';
 import TicketDetails from '../../components/TicketDetails.jsx';
@@ -23,9 +27,11 @@ export default function MemberDashboard() {
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [filter, setFilter] = useState('inprogress');
+  const [filter, setFilter] = useState('verification');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [verifyingId, setVerifyingId] = useState(null);
 
 const filteredTickets = tickets.filter(t => {
 	if (filter === 'completed') return t.status === 'Completed'
@@ -56,6 +62,25 @@ const filteredTickets = tickets.filter(t => {
   async function onVerify(id) {
     await verifyTicket(id);
     await load();
+  }
+
+  function openVerifyConfirm(e, id){
+    e.stopPropagation();
+    setVerifyingId(id);
+    setConfirmOpen(true);
+  }
+
+  async function confirmVerify(){
+    if (verifyingId){
+      await onVerify(verifyingId)
+    }
+    setConfirmOpen(false);
+    setVerifyingId(null);
+  }
+
+  function cancelVerify(){
+    setConfirmOpen(false);
+    setVerifyingId(null);
   }
 
   function openDetails(t){
@@ -159,7 +184,7 @@ const filteredTickets = tickets.filter(t => {
                     </Typography>
                     <Stack direction='row' spacing={1} sx={{ mt: 1 }}>
                       {t.status === 'Work Completion' && (
-                        <Button size='small' onClick={(e) => { e.stopPropagation(); onVerify(t.id) }}>
+                        <Button size='small' onClick={(e) => openVerifyConfirm(e, t.id)}>
                           Verify
                         </Button>
                       )}
@@ -172,6 +197,16 @@ const filteredTickets = tickets.filter(t => {
           </Grid>
         </Grid>
       </Container>
+      <Dialog open={confirmOpen} onClose={cancelVerify}>
+        <DialogTitle>Confirm Verification</DialogTitle>
+        <DialogContent>
+          Are you sure you want to verify that the work is completed?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelVerify}>Cancel</Button>
+          <Button onClick={confirmVerify} variant='contained'>Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

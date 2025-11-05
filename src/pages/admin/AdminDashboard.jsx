@@ -46,8 +46,9 @@ export default function AdminDashboard() {
       status: ['Submitted', 'Service Provider Assignment'],
     });
     const pending = all.filter((t) => t.status === 'Submitted');
+    // Only show tickets that still need assignment (no assigned_provider yet)
     const assignable = all.filter(
-      (t) => t.status === 'Service Provider Assignment'
+      (t) => t.status === 'Service Provider Assignment' && !t.assigned_provider
     );
     // Also get Admin Review status
     //const adminReview = await listTickets({ status: 'Admin Review' })
