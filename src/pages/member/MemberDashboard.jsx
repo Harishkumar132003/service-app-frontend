@@ -172,7 +172,11 @@ const filteredTickets = tickets.filter(t => {
               </TextField>
             </Stack>
 
-            <Stack spacing={1.5}>
+            <Box sx={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              {filteredTickets.length === 0 && (
+                <Typography variant='body2' color='text.secondary'>No data available</Typography>
+              )}
+              <Stack spacing={1.5}>
               {filteredTickets.map((t) => (
                 <Card key={t.id} onClick={()=>openDetails(t)} sx={{ cursor: 'pointer' }}>
                   <CardContent>
@@ -192,7 +196,8 @@ const filteredTickets = tickets.filter(t => {
                   </CardContent>
                 </Card>
               ))}
-            </Stack>
+              </Stack>
+            </Box>
             <TicketDetails open={detailsOpen} onClose={closeDetails} ticket={selectedTicket} />
           </Grid>
         </Grid>

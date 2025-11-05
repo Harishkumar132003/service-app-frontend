@@ -6,6 +6,7 @@ import {
   CardContent,
   Chip,
   Container,
+  Grid,
   InputAdornment,
   MenuItem,
   Stack,
@@ -94,124 +95,135 @@ export default function AdminDashboard() {
               View Full Details
             </Button>
           </Stack>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Pending Review</Typography>
+              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 }}>
+                {(tickets.pending || []).length === 0 && (
+                  <Typography variant='body2' color='text.secondary'>No data available</Typography>
+                )}
+                {(tickets.pending || []).map((t) => (
+                  <Card key={t.id} >
+                    <CardContent>
+                      <Typography sx={{ fontWeight: 600 }} onClick={() => openDetails(t)}>
+                        {t.category} - {t.status}
+                      </Typography>
+                      <Typography variant='body2' color='text.secondary'>
+                        {t.description}
+                      </Typography>
+                      <Stack spacing={1.5} sx={{ mt: 1 }}>
+                        <TextField
+                          label='Amount'
+                          size='small'
+                          type='number'
+                          fullWidth
+                          value={amountMap[t.id] ?? ''}
+                          onChange={(e) =>
+                            setAmountMap((prev) => ({
+                              ...prev,
+                              [t.id]: e.target.value,
+                            }))
+                          }
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position='start'>₹</InputAdornment>
+                            ),
+                          }}
+                        />
 
-          <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-            Pending Review
-          </Typography>
-          {(tickets.pending || []).map((t) => (
-            <Card key={t.id} >
-              <CardContent>
-                <Typography sx={{ fontWeight: 600 }} onClick={() => openDetails(t)}>
-                  {t.category} - {t.status}
-                </Typography>
-                <Typography variant='body2' color='text.secondary'>
-                  {t.description}
-                </Typography>
-                <Stack spacing={1.5} sx={{ mt: 1 }}>
-                  <TextField
-                    label='Amount'
-                    size='small'
-                    type='number'
-                    fullWidth
-                    value={amountMap[t.id] ?? ''}
-                    onChange={(e) =>
-                      setAmountMap((prev) => ({
-                        ...prev,
-                        [t.id]: e.target.value,
-                      }))
-                    }
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position='start'>₹</InputAdornment>
-                      ),
-                    }}
-                  />
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <Button variant='outlined' component='label' size='small'>
+                            {invoiceFileMap[t.id]
+                              ? 'Change Image'
+                              : 'Upload Invoice Image'}
+                            <input
+                              type='file'
+                              hidden
+                              accept='image/*'
+                              onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                setInvoiceFileMap((v) => ({ ...v, [t.id]: f }));
+                              }}
+                            />
+                          </Button>
 
-                  <Stack direction='row' spacing={1} alignItems='center'>
-                    <Button variant='outlined' component='label' size='small'>
-                      {invoiceFileMap[t.id]
-                        ? 'Change Image'
-                        : 'Upload Invoice Image'}
-                      <input
-                        type='file'
-                        hidden
-                        accept='image/*'
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          setInvoiceFileMap((v) => ({ ...v, [t.id]: f }));
-                        }}
-                      />
-                    </Button>
+                          {invoiceFileMap[t.id] && (
+                            <Chip
+                              label={invoiceFileMap[t.id].name}
+                              size='small'
+                              onDelete={() =>
+                                setInvoiceFileMap((v) => ({
+                                  ...v,
+                                  [t.id]: undefined,
+                                }))
+                              }
+                            />
+                          )}
 
-                    {invoiceFileMap[t.id] && (
-                      <Chip
-                        label={invoiceFileMap[t.id].name}
-                        size='small'
-                        onDelete={() =>
-                          setInvoiceFileMap((v) => ({
-                            ...v,
-                            [t.id]: undefined,
-                          }))
-                        }
-                      />
-                    )}
+                          <Button
+                            variant='contained'
+                            size='small'
+                            onClick={() => onCreateInvoice(t)}
+                            disabled={
+                              !(
+                                (amountMap[t.id] || '').trim() || invoiceFileMap[t.id]
+                              )
+                            }
+                          >
+                            Create
+                          </Button>
+                        </Stack>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </Grid>
 
-                    <Button
-                      variant='contained'
-                      size='small'
-                      onClick={() => onCreateInvoice(t)}
-                      disabled={
-                        !(
-                          (amountMap[t.id] || '').trim() || invoiceFileMap[t.id]
-                        )
-                      }
-                    >
-                      Create
-                    </Button>
-                  </Stack>
-                </Stack>
-              </CardContent>
-            </Card>
-          ))}
-
-          <Typography variant='subtitle1' sx={{ fontWeight: 600, mt: 2 }}>
-            Assign to Provider
-          </Typography>
-          {(tickets.assignable || []).map((t) => (
-            <Card key={t.id}>
-              <CardContent>
-                <Typography sx={{ fontWeight: 600 }} onClick={() => openDetails(t)}>
-                  {t.category} - {t.status}
-                </Typography>
-                <Stack direction='row' spacing={1} sx={{ mt: 1 }}>
-                  <TextField
-                    size='small'
-                    select
-                    placeholder='Select provider'
-                    value={assignMap[t.id] || ''}
-                    onChange={(e) =>
-                      setAssignMap((v) => ({ ...v, [t.id]: e.target.value }))
-                    }
-                    sx={{ flex: 1 }}
-                  >
-                    {providers.map((p) => (
-                      <MenuItem key={p.email} value={p.email}>
-                        {p.email}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAssign(t);
-                    }}
-                  >
-                    Assign
-                  </Button>
-                </Stack>
-              </CardContent>
-            </Card>
-          ))}
+            <Grid item xs={12} md={6}>
+              <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Assign to Provider</Typography>
+              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 }}>
+                {(tickets.assignable || []).length === 0 && (
+                  <Typography variant='body2' color='text.secondary'>No data available</Typography>
+                )}
+                {(tickets.assignable || []).map((t) => (
+                  <Card key={t.id}>
+                    <CardContent>
+                      <Typography sx={{ fontWeight: 600 }} onClick={() => openDetails(t)}>
+                        {t.category} - {t.status}
+                      </Typography>
+                      <Stack direction='row' spacing={1} sx={{ mt: 1 }}>
+                        <TextField
+                          size='small'
+                          select
+                          placeholder='Select provider'
+                          value={assignMap[t.id] || ''}
+                          onChange={(e) =>
+                            setAssignMap((v) => ({ ...v, [t.id]: e.target.value }))
+                          }
+                          sx={{ flex: 1 }}
+                        >
+                          {providers.map((p) => (
+                            <MenuItem key={p.email} value={p.email}>
+                              {p.email}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAssign(t);
+                          }}
+                        >
+                          Assign
+                        </Button>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
         </Stack>
         <TicketDetails
           open={detailsOpen}

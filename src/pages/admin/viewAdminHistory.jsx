@@ -46,10 +46,10 @@ const ViewAdminHistory = () => {
           onChange={(e) => setFilter(e.target.value)}
         >
           {role !== 'manager' && (
-            <>
               <MenuItem value='Manager Approval'>Wait For Approval</MenuItem>
+          )}
+           {role !== 'manager' && (
               <MenuItem value='Admin Review'>Decline</MenuItem>
-            </>
           )}
           <MenuItem value='Work Completion'>To Verify (Work Submitted)</MenuItem>
           <MenuItem value='Member Verification'>Verified by Member</MenuItem>

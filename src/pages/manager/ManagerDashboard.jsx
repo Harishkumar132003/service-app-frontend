@@ -82,27 +82,34 @@ export default function ManagerDashboard() {
 							<MenuItem value="rejected">Rejected</MenuItem>
 						</TextField>
 					</Stack>
-					{filtered.filter(t=> t.invoice_id).map(t=> (
-						<Card key={t.id} onClick={()=>openDetails(t)} sx={{ cursor: 'pointer' }}><CardContent>
-							<Typography sx={{ fontWeight: 600 }}>{t.category}</Typography>
-							<Typography variant="body2" color="text.secondary">Invoice: {t.invoice_id}</Typography>
-							<Typography variant="body1" sx={{ mt: .5, fontWeight: 600 }}>Amount: {typeof t.invoice_amount === 'number' ? t.invoice_amount.toFixed(2) : t.invoice_amount}</Typography>
-							{t.invoice_updated_by && (
-								<Typography variant="caption" color="text.secondary">Updated by: {t.invoice_updated_by}</Typography>
-							)}
-							<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                                {t.invoice_status == 'Pending Manager Approval' && (
-								<Button onClick={(e)=>{ e.stopPropagation(); onApprove(t) }}>Approve</Button>
-                                )}
-                                {t.invoice_status == 'Pending Manager Approval' && (
-								<Button variant="outlined" onClick={(e)=>{ e.stopPropagation(); onReject(t) }}>Reject</Button>
-                                )}
-                                {t.invoice_has_image && (
-                                    <Button variant="text" onClick={(e)=>{ e.stopPropagation(); onViewInvoiceImage(t) }}>View Invoice Image</Button>
-                                )}
-							</Stack>
-						</CardContent></Card>
-					))}
+					<Box sx={{ maxHeight: '60vh', overflowY: 'auto' }}>
+						{filtered.filter(t=> t.invoice_id).length === 0 && (
+							<Typography variant="body2" color="text.secondary">No data available</Typography>
+						)}
+						<Stack spacing={1.5}>
+						{filtered.filter(t=> t.invoice_id).map(t=> (
+							<Card key={t.id} onClick={()=>openDetails(t)} sx={{ cursor: 'pointer' }}><CardContent>
+								<Typography sx={{ fontWeight: 600 }}>{t.category}</Typography>
+								<Typography variant="body2" color="text.secondary">Invoice: {t.invoice_id}</Typography>
+								<Typography variant="body1" sx={{ mt: .5, fontWeight: 600 }}>Amount: {typeof t.invoice_amount === 'number' ? t.invoice_amount.toFixed(2) : t.invoice_amount}</Typography>
+								{t.invoice_updated_by && (
+									<Typography variant="caption" color="text.secondary">Updated by: {t.invoice_updated_by}</Typography>
+								)}
+								<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+									{t.invoice_status == 'Pending Manager Approval' && (
+									<Button onClick={(e)=>{ e.stopPropagation(); onApprove(t) }}>Approve</Button>
+									)}
+									{t.invoice_status == 'Pending Manager Approval' && (
+									<Button variant="outlined" onClick={(e)=>{ e.stopPropagation(); onReject(t) }}>Reject</Button>
+									)}
+									{t.invoice_has_image && (
+										<Button variant="text" onClick={(e)=>{ e.stopPropagation(); onViewInvoiceImage(t) }}>View Invoice Image</Button>
+									)}
+								</Stack>
+							</CardContent></Card>
+						))}
+						</Stack>
+					</Box>
 				</Stack>
 			</Container>
 		        <Dialog open={imageOpen} onClose={closeImage} fullWidth maxWidth="sm">
