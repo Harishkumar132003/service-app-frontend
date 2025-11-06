@@ -181,7 +181,7 @@ export default function CompanyManagement() {
 
   return (
     <AdminLayout title="Company Management">
-      <Box sx={{ pb: 10 }}>
+      <Box sx={{ pb: 10 }} >
         {/* Header with stats */}
         <Box
           sx={{

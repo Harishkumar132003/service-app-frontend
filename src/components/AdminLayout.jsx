@@ -159,7 +159,7 @@ export default function AdminLayout({ children, title = 'Admin Panel' }) {
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f5f7fa' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f5f7fa', overflowX: 'hidden' }}>
       <AppBar
         position='fixed'
         sx={{
@@ -241,8 +241,9 @@ export default function AdminLayout({ children, title = 'Admin Panel' }) {
         component='main'
         sx={{
           flexGrow: 1,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          minWidth: 0,
           minHeight: '100vh',
+          overflowX: 'hidden',
         }}
       >
         <Toolbar />
