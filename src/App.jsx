@@ -9,6 +9,7 @@ import ProviderDashboard from './pages/provider/ProviderDashboard.jsx'
 import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx'
 import ViewAdminHistory from './pages/admin/viewAdminHistory.jsx'
 import AccountantHistory from './pages/accountant/accountantHistory.jsx'
+import CompanyManagement from './pages/admin/CompanyManagement.jsx'
 
 function RoleRedirect() {
 	const { role } = useAuth()
@@ -29,6 +30,7 @@ function AppRoutes() {
 			<Route path="/" element={<RoleRedirect />} />
 			<Route element={<ProtectedRoute allowedRoles={["admin"]} />}> 
 				<Route path="/admin" element={<AdminDashboard />} />
+				<Route path="/admin/companies" element={<CompanyManagement />} />
 				<Route path="/admin/history" element={<ViewAdminHistory />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["user"]} />}> 

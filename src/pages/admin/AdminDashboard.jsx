@@ -13,12 +13,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import AppBarTop from '../../components/AppBarTop.jsx';
+import AdminLayout from '../../components/AdminLayout.jsx';
 import { listTickets, assignTicket } from '../../api/tickets.js';
 import { createInvoice } from '../../api/invoices.js';
 import { listUsersByRole } from '../../api/users.js';
 import TicketDetails from '../../components/TicketDetails.jsx';
 import { useNavigate } from 'react-router-dom';
+import MetricsHeader from '../../components/admin/MetricsHeader.jsx';
 
 export default function AdminDashboard() {
 	const navigate = useNavigate();
@@ -79,11 +80,11 @@ export default function AdminDashboard() {
   }
 
   return (
-    <Box>
-      <AppBarTop title='Admin Dashboard' />
-      <Container maxWidth='sm' sx={{ py: 2 }}>
+    <AdminLayout title='Dashboard'>
+      <Container maxWidth='lg'>
         <Stack spacing={1.5}>
-          <Stack direction='row' justifyContent='flex-end'>
+          <MetricsHeader onDrillDown={() => navigate('/admin/history')} />
+          {/* <Stack direction='row' justifyContent='flex-end'>
             <Button
               variant='text'
               size='small'
@@ -94,7 +95,7 @@ export default function AdminDashboard() {
             >
               View Full Details
             </Button>
-          </Stack>
+          </Stack> */}
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Pending Review</Typography>
@@ -231,6 +232,6 @@ export default function AdminDashboard() {
           ticket={selectedTicket}
         />
       </Container>
-    </Box>
+    </AdminLayout>
   );
 }

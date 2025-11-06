@@ -57,3 +57,8 @@ export async function verifyTicket(ticketId) {
 	const res = await axios.patch(`${API_BASE}/tickets/${ticketId}/verify`, {}, { headers: { ...authHeader() } })
 	return res.data
 }
+
+export async function getMonthlyMetrics(){
+    const res = await axios.get(`${API_BASE}/tickets/metrics`, { headers: { ...authHeader() } })
+    return res.data
+}

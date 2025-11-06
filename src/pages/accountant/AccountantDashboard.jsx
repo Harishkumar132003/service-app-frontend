@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import AppBarTop from '../../components/AppBarTop.jsx';
+import AccountantLayout from '../../components/AccountantLayout.jsx';
 import { listTickets } from '../../api/tickets.js';
 import { markPaid } from '../../api/invoices.js';
 import { useNavigate } from 'react-router-dom';
@@ -49,9 +49,8 @@ export default function AccountantDashboard() {
   }
 
   return (
-    <Box>
-      <AppBarTop title='Accountant Dashboard' />
-      <Container maxWidth='sm' sx={{ py: 2 }}>
+    <AccountantLayout title='Dashboard'>
+      <Container maxWidth='lg'>
         <Stack spacing={1.5}>
           <Stack direction='row' justifyContent='flex-end'>
             <Button
@@ -113,7 +112,6 @@ export default function AccountantDashboard() {
               ))}
           </Box>
         </Stack>
-      </Container>
       <Dialog open={confirmOpen} onClose={closeConfirm}>
         <DialogTitle>Confirm Payment</DialogTitle>
         <DialogContent>
@@ -127,6 +125,7 @@ export default function AccountantDashboard() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Container>
+    </AccountantLayout>
   );
 }

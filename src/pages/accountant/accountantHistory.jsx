@@ -1,7 +1,7 @@
-import { AppBar, Toolbar, IconButton, Stack, Typography ,Container, Card, CardContent, Button, Dialog, DialogTitle, DialogContent } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Stack, Typography ,Container, Card, CardContent, Button, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AccountantLayout from '../../components/AccountantLayout.jsx';
 import { listTickets } from '../../api/tickets.js'
 import { fetchInvoiceImageBlob } from '../../api/invoices.js'
 import TicketDetails from '../../components/TicketDetails.jsx'
@@ -23,18 +23,8 @@ const AccountantHistory = () => {
      
    
      return (
-       <div>
-         <AppBar position="sticky" color="primary" enableColorOnDark>
-           <Toolbar sx={{ minHeight: 56 }}>
-             <IconButton edge="start" color="inherit" aria-label="back" onClick={()=>navigate(-1)}>
-               <ArrowBackIcon />
-             </IconButton>
-             <Typography variant='h6' sx={{ ml: 1, fontWeight: 600, flex: 1 }}>
-               Accountant History
-             </Typography>
-           </Toolbar>
-         </AppBar>
-               <Container maxWidth='sm' sx={{ py: 2 }}>
+       <AccountantLayout title='History'>
+         <Container maxWidth='lg'>
          
          {/* Showing only Completed items */}
          <Stack spacing={1.5}>
@@ -76,8 +66,8 @@ const AccountantHistory = () => {
              {imageUrl && (<img src={imageUrl} alt='invoice' style={{ maxWidth: '100%', borderRadius: 4 }} />)}
            </DialogContent>
          </Dialog>
-       </Container >
-     </div>
+       </Container>
+     </AccountantLayout>
    );
 }
 

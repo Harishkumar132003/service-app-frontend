@@ -83,6 +83,7 @@ function roleToPath(role) {
 		case 'user': return '/user'
 		case 'serviceprovider': return '/serviceprovider'
 		case 'accountant': return '/accountant'
+		case 'manager': return '/manager'
 		default: return '/login'
 	}
 }

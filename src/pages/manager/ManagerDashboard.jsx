@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Box, Button, Card, CardContent, Container, Stack, Typography, Dialog, DialogContent, DialogTitle, TextField, MenuItem } from '@mui/material'
-import AppBarTop from '../../components/AppBarTop.jsx'
+import ManagerLayout from '../../components/ManagerLayout.jsx'
 import { listTickets } from '../../api/tickets.js'
 import { approveInvoice, rejectInvoice, fetchInvoiceImageBlob } from '../../api/invoices.js'
 import TicketDetails from '../../components/TicketDetails.jsx'
@@ -58,9 +58,8 @@ export default function ManagerDashboard() {
     })
 
 	return (
-		<Box>
-			<AppBarTop title="Manager Dashboard" />
-			<Container maxWidth="sm" sx={{ py: 2 }}>
+		<ManagerLayout title="Dashboard">
+			<Container maxWidth="lg">
                 <Stack direction='row' justifyContent='flex-end'>
                             <Button
                               variant='text'
@@ -111,7 +110,6 @@ export default function ManagerDashboard() {
 						</Stack>
 					</Box>
 				</Stack>
-			</Container>
 		        <Dialog open={imageOpen} onClose={closeImage} fullWidth maxWidth="sm">
             <DialogTitle>Invoice Image</DialogTitle>
             <DialogContent>
@@ -119,6 +117,7 @@ export default function ManagerDashboard() {
             </DialogContent>
         </Dialog>
         <TicketDetails open={detailsOpen} onClose={closeDetails} ticket={selectedTicket} />
-		</Box>
+			</Container>
+		</ManagerLayout>
 	)
 }
