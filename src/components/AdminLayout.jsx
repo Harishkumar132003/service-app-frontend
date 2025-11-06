@@ -27,6 +27,7 @@ import {
   ChevronLeft as ChevronLeftIcon,
   AccountCircle,
   Business as BusinessIcon,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -68,6 +69,11 @@ export default function AdminLayout({ children, title = 'Admin Panel' }) {
       text: 'Companies',
       icon: <BusinessIcon />,
       path: '/admin/companies',
+    },
+    {
+      text: 'Configuration',
+      icon: <SettingsIcon />,
+      path: '/admin/configuration',
     },
     {
       text: 'History',
