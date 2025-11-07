@@ -176,7 +176,7 @@ export default function CompanyManagement() {
 
   const speedDialActions = [
     { icon: <BusinessIcon />, name: 'New Company', action: openCompanyDialog },
-    { icon: <PersonIcon />, name: 'Quick Add User', action: () => setSpeedDialOpen(false) },
+    // { icon: <PersonIcon />, name: 'Quick Add User', action: () => setSpeedDialOpen(false) },
   ];
 
   return (
@@ -478,7 +478,7 @@ export default function CompanyManagement() {
               <CloseIcon />
             </IconButton>
           </DialogTitle>
-          <DialogContent sx={{ pt: 3 }}>
+          <DialogContent sx={{ paddingTop:'24px !important' }}>
             {dialogType === 'company' ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
                 <TextField
@@ -487,6 +487,7 @@ export default function CompanyManagement() {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   variant="outlined"
+                  
                   autoFocus
                 />
                 <TextField

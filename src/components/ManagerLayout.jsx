@@ -70,7 +70,7 @@ export default function ManagerLayout({ children, title = 'Manager Panel' }) {
   const isActive = (path) => location.pathname === path;
 
   const drawer = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column'  }}>
       <Toolbar
         sx={{
           display: 'flex',
@@ -231,7 +231,7 @@ export default function ManagerLayout({ children, title = 'Manager Panel' }) {
         }}
       >
         <Toolbar />
-        <Box sx={{ p: 3 }}>{children}</Box>
+        <Box sx={{ pt: 3 ,pb:3}}>{children}</Box>
       </Box>
     </Box>
   );

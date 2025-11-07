@@ -1,4 +1,12 @@
-import { MenuItem, Stack, TextField, Typography, Container, Box, Paper } from '@mui/material';
+import {
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+  Container,
+  Box,
+  Paper,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { DatePicker, Space } from 'antd';
 import dayjs from 'dayjs';
@@ -8,13 +16,14 @@ import { useNavigate } from 'react-router-dom';
 import { listTickets } from '../../api/tickets.js';
 import TicketDetails from '../../components/TicketDetails.jsx';
 import AdminLayout from '../../components/AdminLayout.jsx';
-import styled from "styled-components";
+import styled from 'styled-components';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import CancelIcon from '@mui/icons-material/Cancel';
+import ManagerLayout from '../../components/ManagerLayout.jsx';
 
 const StyledRangePickerContainer = styled.div`
   .ant-picker-panel {
@@ -23,7 +32,8 @@ const StyledRangePickerContainer = styled.div`
       .ant-picker-header {
         position: absolute;
         right: 0;
-        .ant-picker-header-prev-btn, .ant-picker-header-view {
+        .ant-picker-header-prev-btn,
+        .ant-picker-header-view {
           visibility: hidden;
         }
       }
@@ -38,11 +48,12 @@ const StyledRangePickerContainer = styled.div`
       }
 
       @media (min-width: 768px) {
-        width: 280px!important;
-        
+        width: 280px !important;
+
         .ant-picker-header {
           position: relative;
-          .ant-picker-header-prev-btn, .ant-picker-header-view {
+          .ant-picker-header-prev-btn,
+          .ant-picker-header-view {
             visibility: initial;
           }
         }
@@ -77,7 +88,7 @@ const HistoryCard = styled(Paper)`
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid #e2e8f0;
-  
+
   &:hover {
     border-color: #667eea;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
@@ -104,14 +115,16 @@ const ListHeader = styled(Box)`
 `;
 
 const ViewAdminHistory = () => {
-  const role = window.location.pathname.includes('/manager/history') ? 'manager' : 'admin';
+  const role = window.location.pathname.includes('/manager/history')
+    ? 'manager'
+    : 'admin';
   const navigate = useNavigate();
   const [filter, setFilter] = useState('Completed');
   const [tickets, setTickets] = useState([]);
   const [dateRange, setDateRange] = useState([null, null]);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  
+
   dayjs.extend(customParseFormat);
   dayjs.extend(relativeTime);
   const { RangePicker } = DatePicker;
@@ -122,42 +135,42 @@ const ViewAdminHistory = () => {
 
   const getStatusConfig = (status) => {
     const configs = {
-      'Completed': {
+      Completed: {
         color: '#d1fae5',
         textColor: '#065f46',
         icon: <CheckCircleIcon sx={{ fontSize: 14 }} />,
-        label: 'Completed'
+        label: 'Completed',
       },
       'Work Completion': {
         color: '#fef3c7',
         textColor: '#92400e',
         icon: <HourglassEmptyIcon sx={{ fontSize: 14 }} />,
-        label: 'To Verify'
+        label: 'To Verify',
       },
       'Manager Approval': {
         color: '#dbeafe',
         textColor: '#1e40af',
         icon: <HourglassEmptyIcon sx={{ fontSize: 14 }} />,
-        label: 'Awaiting Approval'
+        label: 'Awaiting Approval',
       },
       'Member Verification': {
         color: '#e0e7ff',
         textColor: '#4338ca',
         icon: <VerifiedIcon sx={{ fontSize: 14 }} />,
-        label: 'Verified'
+        label: 'Verified',
       },
       'Accountant Processing': {
         color: '#fce7f3',
         textColor: '#9f1239',
         icon: <AccountBalanceWalletIcon sx={{ fontSize: 14 }} />,
-        label: 'Payment Processing'
+        label: 'Payment Processing',
       },
       'Admin Review': {
         color: '#fee2e2',
         textColor: '#991b1b',
         icon: <CancelIcon sx={{ fontSize: 14 }} />,
-        label: 'Declined'
-      }
+        label: 'Declined',
+      },
     };
     return configs[status] || configs['Completed'];
   };
@@ -166,7 +179,7 @@ const ViewAdminHistory = () => {
     const date = dayjs.unix(timestamp);
     const now = dayjs();
     const diffDays = now.diff(date, 'day');
-    
+
     if (diffDays === 0) {
       const diffHours = now.diff(date, 'hour');
       if (diffHours === 0) {
@@ -191,25 +204,31 @@ const ViewAdminHistory = () => {
     const t = await listTickets(params);
     setTickets(t);
   }
+  const Layout = role === 'manager' ? ManagerLayout : AdminLayout;
 
-  useEffect(() => { load(); }, [filter, dateRange]);
+  useEffect(() => {
+    load();
+  }, [filter, dateRange]);
 
   return (
-    <AdminLayout title={role === 'manager' ? 'Manager History' : 'History'}>
+       <Layout title={role === 'manager' ? 'Manager History' : 'History'} >
       <Container maxWidth='lg' sx={{ py: 3 }}>
-        
         {/* Filter Section */}
         <FilterSection>
           <Stack spacing={2}>
             <Box>
-              <FilterLabel sx={{
-    fontWeight: 600,
-    fontSize: '11px',
-    letterSpacing: '0.6px',
-    color: '#64748b', // slate-500
-    textTransform: 'uppercase',
-    ml: 0.3
-  }}>Filter by Status</FilterLabel>
+              <FilterLabel
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '11px',
+                  letterSpacing: '0.6px',
+                  color: '#64748b', // slate-500
+                  textTransform: 'uppercase',
+                  ml: 0.3,
+                }}
+              >
+                Filter by Status
+              </FilterLabel>
               <TextField
                 select
                 fullWidth
@@ -226,48 +245,62 @@ const ViewAdminHistory = () => {
                     },
                     '&.Mui-focused fieldset': {
                       borderColor: '#667eea',
-                    }
-                  }
+                    },
+                  },
                 }}
               >
                 {role !== 'manager' && (
-                  <MenuItem value='Manager Approval'>Wait For Approval</MenuItem>
+                  <MenuItem value='Manager Approval'>
+                    Wait For Approval
+                  </MenuItem>
                 )}
                 {role !== 'manager' && (
                   <MenuItem value='Admin Review'>Decline</MenuItem>
                 )}
-                <MenuItem value='Work Completion'>To Verify (Work Submitted)</MenuItem>
-                <MenuItem value='Member Verification'>Verified by Member</MenuItem>
-                <MenuItem value='Accountant Processing'>Payment Processing</MenuItem>
+                <MenuItem value='Work Completion'>
+                  To Verify (Work Submitted)
+                </MenuItem>
+                <MenuItem value='Member Verification'>
+                  Verified by Member
+                </MenuItem>
+                <MenuItem value='Accountant Processing'>
+                  Payment Processing
+                </MenuItem>
                 <MenuItem value='Completed'>Completed</MenuItem>
               </TextField>
             </Box>
 
             <Box>
-              <FilterLabel sx={{
-    fontWeight: 600,
-    fontSize: '11px',
-    letterSpacing: '0.6px',
-    color: '#64748b', // slate-500
-    textTransform: 'uppercase',
-    ml: 0.3
-  }}>Date Range</FilterLabel>
+              <FilterLabel
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '11px',
+                  letterSpacing: '0.6px',
+                  color: '#64748b', // slate-500
+                  textTransform: 'uppercase',
+                  ml: 0.3,
+                }}
+              >
+                Date Range
+              </FilterLabel>
               <Space size={8} style={{ width: '100%' }}>
                 <RangePicker
-                  style={{ 
+                  style={{
                     width: '100%',
                     borderRadius: '10px',
-                    padding: '10px 16px'
+                    padding: '10px 16px',
                   }}
                   superPrevIcon={false}
                   allowClear
                   panelRender={(panelNode) => (
-                    <StyledRangePickerContainer>{panelNode}</StyledRangePickerContainer>
+                    <StyledRangePickerContainer>
+                      {panelNode}
+                    </StyledRangePickerContainer>
                   )}
                   value={dateRange}
                   onChange={(vals) => setDateRange(vals)}
                   format={['YYYY-MM-DD', 'YYYY/MM/DD']}
-                  placeholder={["Start date", "End date"]}
+                  placeholder={['Start date', 'End date']}
                 />
               </Space>
             </Box>
@@ -282,7 +315,7 @@ const ViewAdminHistory = () => {
               fontWeight: 600,
               color: '#64748b',
               textTransform: 'uppercase',
-              letterSpacing: '0.5px'
+              letterSpacing: '0.5px',
             }}
           >
             Recent Items
@@ -290,7 +323,7 @@ const ViewAdminHistory = () => {
           <Typography
             sx={{
               fontSize: '13px',
-              color: '#94a3b8'
+              color: '#94a3b8',
             }}
           >
             {tickets.length}
@@ -310,21 +343,28 @@ const ViewAdminHistory = () => {
                   setDetailsOpen(true);
                 }}
               >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    mb: 1,
+                  }}
+                >
                   <Typography
                     sx={{
                       fontSize: '16px',
                       fontWeight: 600,
-                      color: '#1a202c'
+                      color: '#1a202c',
                     }}
                   >
                     {t.category} - {t.status}
                   </Typography>
-                  
+
                   <StatusBadge
                     sx={{
                       backgroundColor: statusConfig.color,
-                      color: statusConfig.textColor
+                      color: statusConfig.textColor,
                     }}
                   >
                     {statusConfig.icon}
@@ -337,7 +377,7 @@ const ViewAdminHistory = () => {
                   sx={{
                     color: '#64748b',
                     mb: 1.5,
-                    fontSize: '14px'
+                    fontSize: '14px',
                   }}
                 >
                   {t.description}
@@ -348,7 +388,7 @@ const ViewAdminHistory = () => {
                   <Typography
                     sx={{
                       fontSize: '12px',
-                      color: '#94a3b8'
+                      color: '#94a3b8',
                     }}
                   >
                     {formatTimeAgo(t.created_at)}
@@ -365,14 +405,14 @@ const ViewAdminHistory = () => {
             sx={{
               textAlign: 'center',
               py: 8,
-              px: 2
+              px: 2,
             }}
           >
             <Typography
               sx={{
                 fontSize: '16px',
                 color: '#64748b',
-                mb: 1
+                mb: 1,
               }}
             >
               No tickets found
@@ -380,7 +420,7 @@ const ViewAdminHistory = () => {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#94a3b8'
+                color: '#94a3b8',
               }}
             >
               Try adjusting your filters or date range
@@ -397,7 +437,7 @@ const ViewAdminHistory = () => {
           ticket={selectedTicket}
         />
       </Container>
-    </AdminLayout>
+    </Layout>
   );
 };
 

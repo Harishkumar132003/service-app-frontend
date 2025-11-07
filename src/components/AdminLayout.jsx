@@ -159,7 +159,7 @@ export default function AdminLayout({ children, title = 'Admin Panel' }) {
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f5f7fa', overflowX: 'hidden' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f5f7fa' }}>
       <AppBar
         position='fixed'
         sx={{

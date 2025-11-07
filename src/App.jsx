@@ -11,6 +11,7 @@ import ViewAdminHistory from './pages/admin/viewAdminHistory.jsx'
 import AccountantHistory from './pages/accountant/accountantHistory.jsx'
 import CompanyManagement from './pages/admin/CompanyManagement.jsx'
 import Configuration from './pages/admin/Configuration.jsx'
+import './style/common.scss'
 
 function RoleRedirect() {
 	const { role } = useAuth()
