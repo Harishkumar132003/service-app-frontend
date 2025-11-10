@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import MemberDashboard from './pages/member/MemberDashboard.jsx'
+import MemberProfile from './pages/member/MemberProfile.jsx'
+import MemberLayout from './components/member/MemberLayout.jsx'
 import ManagerDashboard from './pages/manager/ManagerDashboard.jsx'
 import ProviderDashboard from './pages/provider/ProviderDashboard.jsx'
 import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx'
@@ -37,7 +39,10 @@ function AppRoutes() {
 				<Route path="/admin/history" element={<ViewAdminHistory />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["user"]} />}> 
-				<Route path="/user" element={<MemberDashboard />} />
+				<Route path="/user" element={<MemberLayout />}>
+					<Route index element={<MemberDashboard />} />
+					<Route path="profile" element={<MemberProfile />} />
+				</Route>
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["serviceprovider"]} />}> 
 				<Route path="/serviceprovider" element={<ProviderDashboard />} />
