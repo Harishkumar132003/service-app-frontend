@@ -8,6 +8,9 @@ import MemberProfile from './pages/member/MemberProfile.jsx'
 import MemberLayout from './components/member/MemberLayout.jsx'
 import ManagerDashboard from './pages/manager/ManagerDashboard.jsx'
 import ProviderDashboard from './pages/provider/ProviderDashboard.jsx'
+import ProviderProfile from './pages/provider/ProviderProfile.jsx'
+import ProviderLayout from './components/provider/ProviderLayout.jsx'
+import ProviderHistory from './pages/provider/ProviderHistory.jsx'
 import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx'
 import ViewAdminHistory from './pages/admin/viewAdminHistory.jsx'
 import AccountantHistory from './pages/accountant/accountantHistory.jsx'
@@ -45,7 +48,11 @@ function AppRoutes() {
 				</Route>
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["serviceprovider"]} />}> 
-				<Route path="/serviceprovider" element={<ProviderDashboard />} />
+				<Route path="/serviceprovider" element={<ProviderLayout />}>
+					<Route index element={<ProviderDashboard />} />
+					<Route path="history" element={<ProviderHistory />} />
+					<Route path="profile" element={<ProviderProfile />} />
+				</Route>
 			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["accountant"]} />}> 
 				<Route path="/accountant" element={<AccountantDashboard />} />
