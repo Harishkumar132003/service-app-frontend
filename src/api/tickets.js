@@ -29,16 +29,19 @@ export async function listTickets(filters = {}) {
 	return res.data.tickets
 }
 
-export async function createTicket({ category, description, imageFile }) {
-	const form = new FormData()
-	form.append('category', category)
-	form.append('description', description)
-	if (imageFile) {
-	form.append('image', imageFile)
-	
-}
-	const res = await axios.post(`${API_BASE}/tickets`, form, { headers: { ...authHeader() } })
-	return res.data
+export async function createTicket({ categoryId, category, description, imageFile }) {
+    const form = new FormData()
+    if (categoryId) {
+        form.append('category_id', categoryId)
+    } else if (category) {
+        form.append('category', category)
+    }
+    form.append('description', description)
+    if (imageFile) {
+        form.append('image', imageFile)
+    }
+    const res = await axios.post(`${API_BASE}/tickets`, form, { headers: { ...authHeader() } })
+    return res.data
 }
 
 export async function assignTicket(ticketId, providerEmail) {

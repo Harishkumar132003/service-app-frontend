@@ -18,11 +18,12 @@ import {
 import AppBarTop from '../../components/AppBarTop.jsx';
 import TicketDetails from '../../components/TicketDetails.jsx';
 import { listTickets, createTicket, verifyTicket } from '../../api/tickets.js';
-
-const CATEGORIES = ['bathroom', 'table', 'ac'];
+import { listCategories } from '../../api/categories.js';
 
 export default function MemberDashboard() {
   const [tickets, setTickets] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState('');
   const [category, setCategory] = useState('bathroom');
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -48,11 +49,30 @@ const filteredTickets = tickets.filter(t => {
     load();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const items = await listCategories();
+        setCategories(items);
+        if (items && items.length && !categoryId) {
+          setCategoryId(items[0].id);
+        }
+      } catch (e) {
+        // ignore, fallback to legacy categories
+      }
+    })();
+  }, []);
+
   async function onCreate(e) {
     e.preventDefault();
     setSubmitting(true);
-    await createTicket({ category, description, imageFile });
-    setCategory('bathroom');
+    const usingCatalog = (categories && categories.length > 0);
+    await createTicket({ categoryId: usingCatalog ? categoryId : undefined, category: usingCatalog ? undefined : category, description, imageFile });
+    if (usingCatalog) {
+      setCategoryId(categories[0]?.id || '');
+    } else {
+      setCategory('bathroom');
+    }
     setDescription('');
     setImageFile(null);
     await load();
@@ -109,15 +129,19 @@ const filteredTickets = tickets.filter(t => {
                     <TextField
                       select
                       label='Category'
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      value={(categories && categories.length) ? categoryId : category}
+                      onChange={(e) => {
+                        if (categories && categories.length) setCategoryId(e.target.value);
+                        else setCategory(e.target.value);
+                      }}
                       fullWidth
                     >
-                      {CATEGORIES.map((c) => (
-                        <MenuItem key={c} value={c}>
-                          {c}
-                        </MenuItem>
-                      ))}
+                      { categories.map((c) => (
+                            <MenuItem key={c.id} value={c.id}>
+                              {c.name}
+                            </MenuItem>
+                          ))
+                       }
                     </TextField>
                     <TextField
                       label='Description'

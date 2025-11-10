@@ -12,7 +12,7 @@ export default function TicketDetails({ open, onClose, ticket }) {
         <Stack spacing={1}>
           <Typography variant='body1' sx={{ fontWeight: 600 }}>{ticket.category} - {ticket.status}</Typography>
           <Typography variant='body2'>Description: {ticket.description}</Typography>
-          <Typography variant='body2'>Created By: {ticket.created_by}</Typography>
+          <Typography variant='body2'>Created By: {ticket?.created_by_user?.name}</Typography>
           {imageUrl && (
             <Box sx={{ mt: 1 }}>
               <img src={imageUrl} alt='ticket' style={{ maxWidth: '100%', borderRadius: 4 }} />

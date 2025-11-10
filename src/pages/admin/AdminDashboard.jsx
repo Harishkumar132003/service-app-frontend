@@ -17,6 +17,7 @@ import AdminLayout from '../../components/AdminLayout.jsx';
 import { listTickets, assignTicket } from '../../api/tickets.js';
 import { createInvoice } from '../../api/invoices.js';
 import { listUsersByRole } from '../../api/users.js';
+import { listCompanies } from '../../api/companies.js';
 import TicketDetails from '../../components/TicketDetails.jsx';
 import { useNavigate } from 'react-router-dom';
 import MetricsHeader from '../../components/admin/MetricsHeader.jsx';
@@ -30,6 +31,7 @@ export default function AdminDashboard() {
   const [invoiceFileMap, setInvoiceFileMap] = useState({});
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [companyMap, setCompanyMap] = useState({});
   function openDetails(t) {
     setSelectedTicket(t);
     setDetailsOpen(true);
@@ -41,6 +43,9 @@ export default function AdminDashboard() {
   }
 
   async function load() {
+    const companies = await listCompanies();
+    const cmap = Object.fromEntries((companies || []).map((c) => [c.id, c.name]));
+    setCompanyMap(cmap);
     const prov = await listUsersByRole('serviceprovider');
     setProviders(prov);
     // Fetch tickets by status - backend filtering
@@ -104,12 +109,19 @@ export default function AdminDashboard() {
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
                 {(tickets.pending || []).map((t) => (
-                  <Card key={t.id} >
+                  <Card key={t.id} sx={{ borderRadius: 3, boxShadow: '0 6px 20px rgba(0,0,0,0.08)', border: '1px solid', borderColor: 'divider' }}>
                     <CardContent>
-                      <Typography sx={{ fontWeight: 600 }} onClick={() => openDetails(t)}>
-                        {t.category} - {t.status}
-                      </Typography>
-                      <Typography variant='body2' color='text.secondary'>
+                      <Stack direction='row' alignItems='center' justifyContent='space-between'>
+                        <Stack direction='row' spacing={1.25} alignItems='center'>
+                          <Box>
+                            <Typography sx={{ fontWeight: 700,textTransform:'capitalize' }}>{`${t.category}-${companyMap[t.company_id] || 'Unknown'}`}</Typography>
+                          </Box>
+                        </Stack>
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <Button size='small' variant='text' onClick={(e)=>{ e.stopPropagation(); openDetails(t); }}>More</Button>
+                        </Stack>
+                      </Stack>
+                      <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
                         {t.description}
                       </Typography>
                       <Stack spacing={1.5} sx={{ mt: 1 }}>
@@ -188,11 +200,19 @@ export default function AdminDashboard() {
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
                 {(tickets.assignable || []).map((t) => (
-                  <Card key={t.id}>
+                  <Card key={t.id} sx={{ borderRadius: 3, boxShadow: '0 6px 20px rgba(0,0,0,0.08)', border: '1px solid', borderColor: 'divider' }}>
                     <CardContent>
-                      <Typography sx={{ fontWeight: 600 }} onClick={() => openDetails(t)}>
-                        {t.category} - {t.status}
-                      </Typography>
+                      <Stack direction='row' alignItems='center' justifyContent='space-between'>
+                        <Stack direction='row' spacing={1.25} alignItems='center'>
+                          <Box>
+                            <Typography sx={{ fontWeight: 700,textTransform:'capitalize' }}>{`${t.category}-${companyMap[t.company_id] || 'Unknown'}`}</Typography>
+                             <Typography  variant="subtitle2"color='text.secondary'>{t.description}</Typography>
+                          </Box>
+                        </Stack>
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <Button size='small' variant='text' onClick={(e)=>{ e.stopPropagation(); openDetails(t); }}>More</Button>
+                        </Stack>
+                      </Stack>
                       <Stack direction='row' spacing={1} sx={{ mt: 1 }}>
                         <TextField
                           size='small'
