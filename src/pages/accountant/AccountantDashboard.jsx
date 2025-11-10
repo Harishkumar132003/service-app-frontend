@@ -52,19 +52,6 @@ export default function AccountantDashboard() {
     <AccountantLayout title='Dashboard'>
       <Container maxWidth='lg'>
         <Stack spacing={1.5}>
-          <Stack direction='row' justifyContent='flex-end'>
-            <Button
-              variant='text'
-              size='small'
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate('/accountant/history');
-              }}
-            >
-              View History
-            </Button>
-          </Stack>
-
           <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
             Ready for Payment
           </Typography>

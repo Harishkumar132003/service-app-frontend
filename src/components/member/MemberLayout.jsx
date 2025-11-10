@@ -26,7 +26,7 @@ export default function MemberLayout() {
   });
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8fafc' }}>
+    <Box sx={{ display: 'flex',flexDirection:'column', minHeight: '100vh', bgcolor: '#f8fafc' }}>
       <Box sx={{          background: 'linear-gradient(135deg, #0284c7 0%, #0c70a6 100%)',
       p: 1,
 }}>

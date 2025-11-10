@@ -215,7 +215,7 @@ export default function MemberDashboard() {
           },
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', pt: 2.5, px: 2.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center',  px: 2.5 }}>
          
           <Typography variant="h6" sx={{ fontWeight: 700, color: 'white', flexGrow: 1 }}>
             My Tickets

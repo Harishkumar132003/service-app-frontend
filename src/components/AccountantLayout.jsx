@@ -58,7 +58,7 @@ export default function AccountantLayout({ children, title = 'Accountant Panel' 
     {
       text: 'Dashboard',
       icon: <DashboardIcon />,
-      path: '/accountant/dashboard',
+      path: '/accountant',
     },
     {
       text: 'History',

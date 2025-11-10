@@ -104,7 +104,7 @@ export default function AdminDashboard() {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Pending Review</Typography>
-              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 }}>
+              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 ,gap:2,display:'flex',flexDirection:'column'}}>
                 {(tickets.pending || []).length === 0 && (
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
 
             <Grid item xs={12} md={6}>
               <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Assign to Provider</Typography>
-              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 }}>
+              <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1,gap:2,display:'flex',flexDirection:'column' }}>
                 {(tickets.assignable || []).length === 0 && (
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
