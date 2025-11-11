@@ -44,7 +44,7 @@ export default function ProviderDashboard() {
     }
 
     const isUrgent = (t) => {
-      // Consider urgent if older than 48 hours and not completed
+      // Deprecated urgency. Priority is now explicit. Keeping helper for potential future logic.
       const now = Math.floor(Date.now()/1000)
       return t.created_at && (now - t.created_at) > 172800
     }
@@ -98,7 +98,7 @@ export default function ProviderDashboard() {
                                 <Typography sx={{ fontSize: 14, color: '#1e293b' }}>{t.company?.name || 'Company'}</Typography>
                               </Stack>
                               <Stack direction="row" spacing={1.5} alignItems="center">
-                                {isUrgent(t) && <Chip size="small" label="Urgent" sx={{ bgcolor: '#fee2e2', color: '#ef4444', fontWeight: 600 }} />}
+                                <Chip size="small" label={(t.priority || 'medium').charAt(0).toUpperCase() + (t.priority || 'medium').slice(1)} sx={{ bgcolor: (t.priority==='urgent'?'#fee2e2': (t.priority==='low'?'#f1f5f9':'#dbeafe')), color: (t.priority==='urgent'?'#ef4444': (t.priority==='low'?'#475569':'#1e40af')), fontWeight: 600 }} />
                                 <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: '#64748b' }}>
                                   <TimeIcon sx={{ fontSize: 16 }} />
                                   <Typography sx={{ fontSize: 12 }}>{formatTimeAgo(t.created_at)}</Typography>

@@ -60,6 +60,7 @@ export default function MemberDashboard() {
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [priority, setPriority] = useState('medium');
   const [filter, setFilter] = useState('verification');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -104,6 +105,7 @@ export default function MemberDashboard() {
       categoryId: usingCatalog ? categoryId : undefined, 
       category: usingCatalog ? undefined : category, 
       description, 
+      priority,
       imageFile 
     });
     if (usingCatalog) {
@@ -113,6 +115,7 @@ export default function MemberDashboard() {
     }
     setDescription('');
     setImageFile(null);
+    setPriority('medium');
     await load();
     setSubmitting(false);
   }
@@ -319,6 +322,46 @@ export default function MemberDashboard() {
                     </Box>
                   </MenuItem>
                 ))}
+              </TextField>
+            </Paper>
+
+            {/* Priority Section */}
+            <Typography sx={{ fontSize: 13, fontWeight: 600, color: '#64748b', mb: 1.5, letterSpacing: 0.5 }}>
+              PRIORITY
+            </Typography>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 1,
+                mb: 3,
+                borderRadius: 3,
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              }}
+            >
+              <TextField
+                select
+                fullWidth
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+                SelectProps={{
+                  renderValue: (value) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Typography sx={{ fontWeight: 500, fontSize: 15 }}>
+                        {value.charAt(0).toUpperCase() + value.slice(1)}
+                      </Typography>
+                    </Box>
+                  ),
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { border: 'none' },
+                  },
+                }}
+              >
+                <MenuItem value="urgent">Urgent</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="low">Low</MenuItem>
               </TextField>
             </Paper>
 

@@ -77,7 +77,7 @@ export default function AccountantLayout({ children, title = 'Accountant Panel' 
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 2,
-          background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+          background: 'linear-gradient(135deg, #10B981, #059669)',
           color: 'white',
         }}
       >
@@ -105,7 +105,7 @@ export default function AccountantLayout({ children, title = 'Accountant Panel' 
                 mx: 1,
                 borderRadius: 2,
                 backgroundColor: isActive(item.path)
-                  ? 'primary.main'
+                  ? '#059669'
                   : 'transparent',
                 color: isActive(item.path) ? 'white' : 'text.primary',
                 '&:hover': {

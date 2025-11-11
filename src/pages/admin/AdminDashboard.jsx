@@ -109,12 +109,13 @@ export default function AdminDashboard() {
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
                 {(tickets.pending || []).map((t) => (
-                  <Card key={t.id} sx={{ borderRadius: 3, boxShadow: '0 6px 20px rgba(0,0,0,0.08)', border: '1px solid', borderColor: 'divider' }}>
+                  <Card key={t.id} sx={{ borderRadius: 3, boxShadow: '0 6px 20px rgba(0,0,0,0.08)', border: '1px solid', borderColor: 'divider',overflow:'unset' }}>
                     <CardContent>
                       <Stack direction='row' alignItems='center' justifyContent='space-between'>
                         <Stack direction='row' spacing={1.25} alignItems='center'>
                           <Box>
                             <Typography sx={{ fontWeight: 700,textTransform:'capitalize' }}>{`${t.category}-${companyMap[t.company_id] || 'Unknown'}`}</Typography>
+                            <Chip size='small' label={(t.priority||'medium').charAt(0).toUpperCase() + (t.priority||'medium').slice(1)} sx={{ ml: .5, mt: .5, bgcolor: (t.priority==='urgent'?'#fee2e2': (t.priority==='low'?'#f1f5f9':'#dbeafe')), color: (t.priority==='urgent'?'#ef4444': (t.priority==='low'?'#475569':'#1e40af')) }} />
                           </Box>
                         </Stack>
                         <Stack direction='row' spacing={1} alignItems='center'>
@@ -206,6 +207,7 @@ export default function AdminDashboard() {
                         <Stack direction='row' spacing={1.25} alignItems='center'>
                           <Box>
                             <Typography sx={{ fontWeight: 700,textTransform:'capitalize' }}>{`${t.category}-${companyMap[t.company_id] || 'Unknown'}`}</Typography>
+                            <Chip size='small' label={(t.priority||'medium').charAt(0).toUpperCase() + (t.priority||'medium').slice(1)} sx={{ ml: .5, mt: .5, bgcolor: (t.priority==='urgent'?'#fee2e2': (t.priority==='low'?'#f1f5f9':'#dbeafe')), color: (t.priority==='urgent'?'#ef4444': (t.priority==='low'?'#475569':'#1e40af')) }} />
                              <Typography  variant="subtitle2"color='text.secondary'>{t.description}</Typography>
                           </Box>
                         </Stack>

@@ -29,7 +29,7 @@ export async function listTickets(filters = {}) {
 	return res.data.tickets
 }
 
-export async function createTicket({ categoryId, category, description, imageFile }) {
+export async function createTicket({ categoryId, category, description, imageFile, priority }) {
     const form = new FormData()
     if (categoryId) {
         form.append('category_id', categoryId)
@@ -37,6 +37,9 @@ export async function createTicket({ categoryId, category, description, imageFil
         form.append('category', category)
     }
     form.append('description', description)
+    if (priority) {
+        form.append('priority', priority)
+    }
     if (imageFile) {
         form.append('image', imageFile)
     }

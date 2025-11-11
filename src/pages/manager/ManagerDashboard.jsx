@@ -146,6 +146,8 @@ export default function ManagerDashboard() {
                                             <Chip size="small" label={t.invoice_status || 'Pending Manager Approval'} color={ticketStatusKey(t) === 'approved' ? 'success' : ticketStatusKey(t) === 'rejected' ? 'error' : 'warning'} variant="outlined" />
                                         </Stack>
                                         <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: .5 }}>
+                                            {/* Priority */}
+                                            <Chip size="small" label={(t.priority || 'medium').charAt(0).toUpperCase() + (t.priority || 'medium').slice(1)} sx={{ bgcolor: (t.priority==='urgent'?'#fee2e2': (t.priority==='low'?'#f1f5f9':'#dbeafe')), color: (t.priority==='urgent'?'#ef4444': (t.priority==='low'?'#475569':'#1e40af')) }} />
                                             {typeof t.invoice_amount === 'number' && <AttachMoney fontSize="small" color="action" />}
                                             <Typography variant="body2" sx={{ fontWeight: 600 }}>{typeof t.invoice_amount === 'number' ? t.invoice_amount.toFixed(2) : t.invoice_amount}</Typography>
                                         </Stack>

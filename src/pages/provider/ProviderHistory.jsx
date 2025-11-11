@@ -21,7 +21,7 @@ export default function ProviderHistory() {
   const [imageUrls, setImageUrls] = useState([]);
 
   async function load() {
-    const t = await listTickets({ status: 'Completed' });
+    const t = await listTickets({ status: ['Completed','Accountant Processing'] });
     setTickets(t || []);
   }
 
@@ -117,6 +117,7 @@ export default function ProviderHistory() {
                     <Typography sx={{ fontSize: 14, color: '#1e293b' }}>{t.company?.name || 'Company'}</Typography>
                   </Stack>
                   <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Chip size="small" label={(t.priority || 'medium').charAt(0).toUpperCase() + (t.priority || 'medium').slice(1)} sx={{ bgcolor: (t.priority==='urgent'?'#fee2e2': (t.priority==='low'?'#f1f5f9':'#dbeafe')), color: (t.priority==='urgent'?'#ef4444': (t.priority==='low'?'#475569':'#1e40af')), fontWeight: 600 }} />
                     <Chip size="small" label="Completed" sx={{ bgcolor: '#dcfce7', color: '#065f46', fontWeight: 600 }} />
                     <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: '#64748b' }}>
                       <TimeIcon sx={{ fontSize: 16 }} />
