@@ -16,3 +16,13 @@ export async function getCurrentUser() {
   const res = await axios.get(`${API_BASE}/users/me`, { headers: { ...authHeader() } })
   return res.data
 }
+
+export async function createUser(data) {
+  const res = await axios.post(`${API_BASE}/users`, data, { headers: { ...authHeader() } })
+  return res.data
+}
+
+export async function updateUser(userId, data) {
+  const res = await axios.patch(`${API_BASE}/users/${userId}`, data, { headers: { ...authHeader() } })
+  return res.data
+}

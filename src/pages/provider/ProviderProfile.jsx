@@ -44,7 +44,7 @@ export default function ProviderProfile() {
                 </Stack>
               </Box>
               <Box>
-                <Typography variant="overline" color="text.secondary">Companies</Typography>
+                <Typography variant="overline" color="text.secondary">On-Site Companies</Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap">
                   {(me.companies && me.companies.length) ? (
                     me.companies.map((c) => (

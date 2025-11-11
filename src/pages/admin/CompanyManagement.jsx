@@ -545,7 +545,6 @@ export default function CompanyManagement() {
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
                   <option value="manager">Manager</option>
-                  <option value="serviceprovider">Service Provider</option>
                   <option value="accountant">Accountant</option>
                 </TextField>
               </Box>

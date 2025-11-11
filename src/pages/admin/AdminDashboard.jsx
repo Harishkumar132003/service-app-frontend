@@ -12,6 +12,8 @@ import {
   Stack,
   TextField,
   Typography,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import AdminLayout from '../../components/AdminLayout.jsx';
 import { listTickets, assignTicket } from '../../api/tickets.js';
@@ -34,6 +36,7 @@ export default function AdminDashboard() {
   const [companyMap, setCompanyMap] = useState({});
   const [companyList, setCompanyList] = useState([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  const [onsiteOnlyMap, setOnsiteOnlyMap] = useState({});
   function openDetails(t) {
     setSelectedTicket(t);
     setDetailsOpen(true);
@@ -252,14 +255,28 @@ export default function AdminDashboard() {
                           <Box>
                             <Typography sx={{ fontWeight: 700,textTransform:'capitalize' }}>{`${t.category}-${companyMap[t.company_id] || 'Unknown'}`}</Typography>
                             <Chip size='small' label={(t.priority||'medium').charAt(0).toUpperCase() + (t.priority||'medium').slice(1)} sx={{ ml: .5, mt: .5, bgcolor: (t.priority==='urgent'?'#fee2e2': (t.priority==='low'?'#f1f5f9':'#dbeafe')), color: (t.priority==='urgent'?'#ef4444': (t.priority==='low'?'#475569':'#1e40af')) }} />
-                             <Typography  variant="subtitle2"color='text.secondary'>{t.description}</Typography>
+                             <Typography  variant="subtitle2"color='text.secondary' sx={{ mt: 1 }}>{t.description}</Typography>
                           </Box>
                         </Stack>
                         <Stack direction='row' spacing={1} alignItems='center'>
                           <Button size='small' variant='text' onClick={(e)=>{ e.stopPropagation(); openDetails(t); }}>More</Button>
                         </Stack>
                       </Stack>
-                      <Stack direction='row' spacing={1} sx={{ mt: 1 }}>
+                      <Stack direction='row' spacing={1} alignItems='center' sx={{ mt: 1 }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              size='small'
+                              checked={!!onsiteOnlyMap[t.id]}
+                              onChange={(e)=> setOnsiteOnlyMap(v => ({ ...v, [t.id]: e.target.checked }))}
+                            />
+                          }
+                          label='On-site only'
+                          sx={{ mr: 1, ml: 0, '& .MuiFormControlLabel-label': { fontSize: 12, color: 'text.secondary' } }}
+                        />
+                      </Stack>
+                      <Stack direction='row' spacing={1} alignItems='center' sx={{ mt: 1 }}>
+                        
                         <TextField
                           size='small'
                           select
@@ -270,11 +287,19 @@ export default function AdminDashboard() {
                           }
                           sx={{ flex: 1 }}
                         >
-                          {providers.map((p) => (
-                            <MenuItem key={p.email} value={p.email}>
-                              {p.email}
-                            </MenuItem>
-                          ))}
+                          {(() => {
+                            const opts = onsiteOnlyMap[t.id]
+                              ? providers.filter((p) => p.onsite_company_id === t.company_id)
+                              : providers
+                            if (!opts.length) {
+                              return <MenuItem disabled value="">No on-site providers</MenuItem>
+                            }
+                            return opts.map((p) => (
+                              <MenuItem key={p.email} value={p.email}>
+                                {p.name || p.email}
+                              </MenuItem>
+                            ))
+                          })()}
                         </TextField>
                         <Button
                           onClick={(e) => {

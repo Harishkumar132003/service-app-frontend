@@ -15,6 +15,7 @@ import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx'
 import ViewAdminHistory from './pages/admin/viewAdminHistory.jsx'
 import AccountantHistory from './pages/accountant/accountantHistory.jsx'
 import CompanyManagement from './pages/admin/CompanyManagement.jsx'
+import ProviderManagement from './pages/admin/ProviderManagement.jsx'
 import Configuration from './pages/admin/Configuration.jsx'
 import './style/common.scss'
 
@@ -38,6 +39,7 @@ function AppRoutes() {
 			<Route element={<ProtectedRoute allowedRoles={["admin"]} />}> 
 				<Route path="/admin" element={<AdminDashboard />} />
 				<Route path="/admin/companies" element={<CompanyManagement />} />
+				<Route path="/admin/providers" element={<ProviderManagement />} />
 				<Route path="/admin/configuration" element={<Configuration />} />
 				<Route path="/admin/history" element={<ViewAdminHistory />} />
 			</Route>

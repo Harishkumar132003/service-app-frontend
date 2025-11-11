@@ -71,6 +71,11 @@ export default function AdminLayout({ children, title = 'Admin Panel' }) {
       path: '/admin/companies',
     },
     {
+      text: 'Providers',
+      icon: <BusinessIcon />,
+      path: '/admin/providers',
+    },
+    {
       text: 'Configuration',
       icon: <SettingsIcon />,
       path: '/admin/configuration',
