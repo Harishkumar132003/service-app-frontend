@@ -77,7 +77,7 @@ export default function ManagerLayout({ children, title = 'Manager Panel' }) {
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 2,
-          background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+          background: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
           color: 'white',
         }}
       >

@@ -14,6 +14,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router-dom';
 import { listTickets } from '../../api/tickets.js';
+import { listCompanies } from '../../api/companies.js';
 import TicketDetails from '../../components/TicketDetails.jsx';
 import AdminLayout from '../../components/AdminLayout.jsx';
 import styled from 'styled-components';
@@ -124,6 +125,8 @@ const ViewAdminHistory = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [companyList, setCompanyList] = useState([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
   dayjs.extend(customParseFormat);
   dayjs.extend(relativeTime);
@@ -210,12 +213,78 @@ const ViewAdminHistory = () => {
     load();
   }, [filter, dateRange]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const cs = await listCompanies();
+        setCompanyList(cs || []);
+      } catch (_) {
+        setCompanyList([]);
+      }
+    })();
+  }, []);
+
+  const displayTickets = selectedCompanyId
+    ? tickets.filter((t) => (t.company_id === selectedCompanyId) || (t.company?.id === selectedCompanyId))
+    : tickets;
+
   return (
        <Layout title={role === 'manager' ? 'Manager History' : 'History'} >
       <Container maxWidth='lg' sx={{ py: 3 }}>
         {/* Filter Section */}
         <FilterSection>
           <Stack spacing={2}>
+            <Box>
+              <FilterLabel
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '11px',
+                  letterSpacing: '0.6px',
+                  color: '#64748b',
+                  textTransform: 'uppercase',
+                  ml: 0.3,
+                }}
+              >
+                Filter by Company
+              </FilterLabel>
+              <TextField
+                select
+                fullWidth
+                size='medium'
+                value={selectedCompanyId}
+                onChange={(e) => setSelectedCompanyId(e.target.value)}
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (v) => {
+                    if (!v) return 'All Companies';
+                    const c = (companyList || []).find((x) => x.id === v);
+                    return c?.name || 'Company';
+                  },
+                }}
+                InputLabelProps={{ shrink: true }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '10px',
+                    backgroundColor: 'white',
+                    height: 44,
+                    '&:hover fieldset': {
+                      borderColor: '#cbd5e0',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#667eea',
+                    },
+                  },
+                }}
+                label=''
+              >
+                <MenuItem value=''>All Companies</MenuItem>
+                {(companyList || []).map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    {c.name || c.id}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
             <Box>
               <FilterLabel
                 sx={{
@@ -326,13 +395,13 @@ const ViewAdminHistory = () => {
               color: '#94a3b8',
             }}
           >
-            {tickets.length}
+            {displayTickets.length}
           </Typography>
         </ListHeader>
 
         {/* History Cards */}
         <Stack spacing={1.5}>
-          {tickets.map((t) => {
+          {displayTickets.map((t) => {
             const statusConfig = getStatusConfig(t.status);
             return (
               <HistoryCard

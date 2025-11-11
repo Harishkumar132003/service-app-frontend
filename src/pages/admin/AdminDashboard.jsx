@@ -32,6 +32,8 @@ export default function AdminDashboard() {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [companyMap, setCompanyMap] = useState({});
+  const [companyList, setCompanyList] = useState([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
   function openDetails(t) {
     setSelectedTicket(t);
     setDetailsOpen(true);
@@ -44,6 +46,7 @@ export default function AdminDashboard() {
 
   async function load() {
     const companies = await listCompanies();
+    setCompanyList(companies || []);
     const cmap = Object.fromEntries((companies || []).map((c) => [c.id, c.name]));
     setCompanyMap(cmap);
     const prov = await listUsersByRole('serviceprovider');
@@ -89,6 +92,43 @@ export default function AdminDashboard() {
       <Container maxWidth='lg'>
         <Stack spacing={1.5}>
           <MetricsHeader onDrillDown={() => navigate('/admin/history')} />
+          {/* Filters */}
+          <Box sx={{
+            p: 1.5,
+            borderRadius: 3,
+            border: '1px solid #e2e8f0',
+            bgcolor: 'white',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+          }}>
+            <Stack  spacing={1.5} alignItems='center' >
+              <Typography sx={{ fontWeight: 400, color: '#0f172a' }}>Filter By Company</Typography>
+              <TextField
+                select
+                size='small'
+                value={selectedCompanyId}
+                onChange={(e)=> setSelectedCompanyId(e.target.value)}
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (v) => {
+                    if (!v) return 'All Companies'
+                    const c = (companyList || []).find(x => x.id === v)
+                    return c?.name || 'Company'
+                  }
+                }}
+                InputLabelProps={{ shrink: true }}
+                sx={{ width:'100%',minWidth: 240, '& .MuiOutlinedInput-root': { borderRadius: 2.5, bgcolor: 'white' } }}
+                label='Company'
+              >
+                <MenuItem value=''>All Companies</MenuItem>
+                {(companyList||[]).map(c => (
+                  <MenuItem key={c.id} value={c.id}>{c.name || c.id}</MenuItem>
+                ))}
+              </TextField>
+              {selectedCompanyId && (
+                <Button size='small' variant='text' onClick={()=> setSelectedCompanyId('')} sx={{ textTransform: 'none' }}>Clear</Button>
+              )}
+            </Stack>
+          </Box>
           {/* <Stack direction='row' justifyContent='flex-end'>
             <Button
               variant='text'
@@ -101,14 +141,18 @@ export default function AdminDashboard() {
               View Full Details
             </Button>
           </Stack> */}
+          {(() => {
+            const pendingFiltered = selectedCompanyId ? (tickets.pending || []).filter(t => t.company_id === selectedCompanyId) : (tickets.pending || []);
+            const assignableFiltered = selectedCompanyId ? (tickets.assignable || []).filter(t => t.company_id === selectedCompanyId) : (tickets.assignable || []);
+            return (
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} pl='0px !important'>
               <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Pending Review</Typography>
               <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 ,gap:2,display:'flex',flexDirection:'column'}}>
-                {(tickets.pending || []).length === 0 && (
+                {pendingFiltered.length === 0 && (
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
-                {(tickets.pending || []).map((t) => (
+                {pendingFiltered.map((t) => (
                   <Card key={t.id} sx={{ borderRadius: 3, boxShadow: '0 6px 20px rgba(0,0,0,0.08)', border: '1px solid', borderColor: 'divider',overflow:'unset' }}>
                     <CardContent>
                       <Stack direction='row' alignItems='center' justifyContent='space-between'>
@@ -194,13 +238,13 @@ export default function AdminDashboard() {
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} pl='0px !important'>
               <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Assign to Provider</Typography>
               <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1,gap:2,display:'flex',flexDirection:'column' }}>
-                {(tickets.assignable || []).length === 0 && (
+                {assignableFiltered.length === 0 && (
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
                 )}
-                {(tickets.assignable || []).map((t) => (
+                {assignableFiltered.map((t) => (
                   <Card key={t.id} sx={{ borderRadius: 3, boxShadow: '0 6px 20px rgba(0,0,0,0.08)', border: '1px solid', borderColor: 'divider' }}>
                     <CardContent>
                       <Stack direction='row' alignItems='center' justifyContent='space-between'>
@@ -247,6 +291,8 @@ export default function AdminDashboard() {
               </Box>
             </Grid>
           </Grid>
+            )
+          })()}
         </Stack>
         <TicketDetails
           open={detailsOpen}
