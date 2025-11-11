@@ -150,7 +150,7 @@ export default function AdminDashboard() {
             return (
           <Grid container spacing={2}>
             <Grid item xs={12} md={6} pl='0px !important'>
-              <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Pending Review</Typography>
+              <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>Pending Amount Assignments</Typography>
               <Box sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 1 ,gap:2,display:'flex',flexDirection:'column'}}>
                 {pendingFiltered.length === 0 && (
                   <Typography variant='body2' color='text.secondary'>No data available</Typography>
