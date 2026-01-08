@@ -29,6 +29,7 @@ function MetricTile({ title, value, color, onClick, tooltip, highlight = false, 
         onClick={onClick}
         elevation={highlight ? 4 : 1}
         sx={{
+          textAlign: 'center',
           p: 2,
           borderRadius: 3,
           cursor: onClick ? 'pointer' : 'default',
